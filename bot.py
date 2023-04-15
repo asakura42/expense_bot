@@ -56,23 +56,28 @@ def clear_num_list(message):
     num_list.clear()
     bot.reply_to(message, "File cleared!")
 
+# Handle '/result'
+@bot.message_handler(commands=['result'])
+def output_result_message(message):
+    # read numbers from file
+    num_list.clear()
+    read_num_list_from_file()
+    bot.reply_to(message, output_result())
+
 # Handle all other messages with content_type 'text'
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def echo_message(message):
     # read numbers from file
     num_list.clear()
     read_num_list_from_file()
-    if message.text == "/result":
-        bot.reply_to(message, output_result())
-    else:
-        try:
-            num = int(message.text)
-            num_list.append(num)
-            # write numbers to file
-            write_num_list_to_file()
-            bot.reply_to(message, "Expense added!")
-        except ValueError:
-            bot.reply_to(message, "Sorry, I can only take numbers!")
+    try:
+        num = int(message.text)
+        num_list.append(num)
+        # write numbers to file
+        write_num_list_to_file()
+        bot.reply_to(message, "Expense added!")
+    except ValueError:
+        bot.reply_to(message, "Sorry, I can only take numbers!")
 
 # Run the bot
 bot.polling()
